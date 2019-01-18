@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "44210dc4f7de0a5ba0ed1e65b1e79379",
+    "content-hash": "e4a2ad53ff002d627eefe8169036f452",
     "packages": [
         {
             "name": "buzzingpixel/corbomite-config-collector",
