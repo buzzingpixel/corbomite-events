@@ -11,8 +11,8 @@ use corbomite\events\EventListenerRegistration;
 return [
     EventCollector::class => function () {
         return new EventCollector(
-            Di::get(DataStore::class),
             Di::get(Collector::class),
+            Di::get(DataStore::class),
             Di::get(EventListenerRegistration::class)
         );
     },
