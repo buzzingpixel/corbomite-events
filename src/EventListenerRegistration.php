@@ -21,7 +21,7 @@ class EventListenerRegistration implements EventListenerRegistrationInterface
         $this->dataStore = $dataStore;
     }
 
-    public function register(string $provider, string $eventName, string $class)
+    public function register(string $provider, string $eventName, string $class): void
     {
         $items = $this->getListenersForEvent($provider, $eventName);
 

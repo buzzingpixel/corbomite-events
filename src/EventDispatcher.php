@@ -30,7 +30,7 @@ class EventDispatcher implements EventDispatcherInterface
         string $provider,
         string $name,
         EventInterface $event
-    ) {
+    ): void {
         /** @noinspection PhpUnhandledExceptionInspection */
         $reg = $this->di->getFromDefinition(EventListenerRegistration::class);
 
@@ -45,7 +45,7 @@ class EventDispatcher implements EventDispatcherInterface
         }
     }
 
-    private function dispatchEvent(EventInterface $event, string $listener)
+    private function dispatchEvent(EventInterface $event, string $listener): void
     {
         $listenerConstructedClass = null;
 

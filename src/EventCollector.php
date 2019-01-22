@@ -28,17 +28,17 @@ class EventCollector
         $this->registration = $registration;
     }
 
-    public function collect()
+    public function collect(): void
     {
         if ($this->dataStore->storeItem(self::class) === true) {
             return;
         }
 
-        $paths = $this->collector->getExtraKeyAsArray(
+        $paths = $this->collector->getPathsFromExtraKey(
             'eventCollectorConfigFilePath'
         );
 
-        $eventListenerRegistration = $this->registration;
+        $eventListenerRegistration = $r = $this->registration;
 
         foreach ($paths as $path) {
             require $path;
