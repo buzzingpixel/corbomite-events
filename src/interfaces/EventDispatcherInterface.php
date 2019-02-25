@@ -13,13 +13,7 @@ interface EventDispatcherInterface
 {
     /**
      * Dispatches an event
-     * @param string $provider Usually a class or interface name but can be any unique string
-     * @param string $name Name of event
      * @param EventInterface $event
      */
-    public function dispatch(
-        string $provider,
-        string $name,
-        EventInterface $event
-    );
+    public function dispatch(EventInterface $event);
 }

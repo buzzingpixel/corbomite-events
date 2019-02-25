@@ -26,15 +26,12 @@ class EventDispatcher implements EventDispatcherInterface
         $di->getFromDefinition(EventCollector::class)->collect();
     }
 
-    public function dispatch(
-        string $provider,
-        string $name,
-        EventInterface $event
-    ): void {
+    public function dispatch(EventInterface $event): void
+    {
         /** @noinspection PhpUnhandledExceptionInspection */
         $reg = $this->di->getFromDefinition(EventListenerRegistration::class);
 
-        $events = $reg->getListenersForEvent($provider, $name);
+        $events = $reg->getListenersForEvent($event->provider(), $event->name());
 
         foreach ($events as $listener) {
             if ($event->stopPropagation()) {
