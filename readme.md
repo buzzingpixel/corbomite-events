@@ -1,5 +1,7 @@
 # Corbomite Events
 
+<p><a href="https://travis-ci.org/buzzingpixel/corbomite-events"><img src="https://travis-ci.org/buzzingpixel/corbomite-events.svg?branch=master"></a></p>
+
 Part of BuzzingPixel's Corbomite project.
 
 Provides event registration and dispatching.
@@ -14,7 +16,7 @@ Listeners must implement the interface `\corbomite\events\interfaces\EventListen
 
 ## Dispatching events
 
-To dispatch an event, get `\corbomite\events\EventDispatcher` from the DI and call the `dispatch` sending it appropriate parameters. One of those parameters is an instance of `\corbomite\events\interfaces\EventInterface`. You should create a class for your event implementing this interface.
+To dispatch an event, get `\corbomite\events\EventDispatcher` from the DI and call the `dispatch` sending it an instance of the event class you wish to dispatch. That event class instance must implement `\corbomite\events\interfaces\EventInterface`.
 
 ## License
 
