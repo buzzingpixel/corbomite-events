@@ -7,4 +7,4 @@ if "%1" == "" (
 )
 
 docker-compose up -d
-docker exec -it --user root %ENV%-corbomite-cli bash
+docker exec -it --user root %ENV%-corbomite-events bash
