@@ -3,24 +3,28 @@
 declare(strict_types=1);
 
 use corbomite\configcollector\Collector;
-use corbomite\di\Di;
 use corbomite\events\EventCollector;
 use corbomite\events\EventDispatcher;
 use corbomite\events\EventListenerRegistration;
+use corbomite\events\interfaces\EventListenerRegistrationInterface;
 use corbomite\requestdatastore\DataStore;
+use Psr\Container\ContainerInterface;
 
 return [
-    EventCollector::class => static function () {
+    EventCollector::class => static function (ContainerInterface $di) {
         return new EventCollector(
-            Di::get(Collector::class),
-            Di::get(DataStore::class),
-            Di::get(EventListenerRegistration::class)
+            $di->get(Collector::class),
+            $di->get(DataStore::class),
+            $di->get(EventListenerRegistration::class)
         );
     },
-    EventListenerRegistration::class => static function () {
-        return new EventListenerRegistration(Di::get(DataStore::class));
+    EventListenerRegistration::class => static function (ContainerInterface $di) {
+        return new EventListenerRegistration($di->get(DataStore::class));
     },
-    EventDispatcher::class => static function () {
-        return new EventDispatcher(new Di());
+    EventListenerRegistrationInterface::class => static function (ContainerInterface $di) {
+        return $di->get(EventListenerRegistration::class);
+    },
+    EventDispatcher::class => static function (ContainerInterface $di) {
+        return new EventDispatcher($di);
     },
 ];
