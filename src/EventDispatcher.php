@@ -1,35 +1,32 @@
 <?php
-declare(strict_types=1);
 
-/**
- * @author TJ Draper <tj@buzzingpixel.com>
- * @copyright 2019 BuzzingPixel, LLC
- * @license Apache-2.0
- */
+declare(strict_types=1);
 
 namespace corbomite\events;
 
-use LogicException;
-use corbomite\di\Di;
+use corbomite\events\interfaces\EventDispatcherInterface;
 use corbomite\events\interfaces\EventInterface;
 use corbomite\events\interfaces\EventListenerInterface;
-use corbomite\events\interfaces\EventDispatcherInterface;
+use corbomite\events\interfaces\EventListenerRegistrationInterface;
+use LogicException;
+use Psr\Container\ContainerInterface;
 
 class EventDispatcher implements EventDispatcherInterface
 {
+    /** @var ContainerInterface */
     private $di;
 
-    public function __construct(Di $di)
+    public function __construct(ContainerInterface $di)
     {
         $this->di = $di;
         /** @noinspection PhpUnhandledExceptionInspection */
-        $di->getFromDefinition(EventCollector::class)->collect();
+        $di->get(EventCollector::class)->collect();
     }
 
-    public function dispatch(EventInterface $event): void
+    public function dispatch(EventInterface $event) : void
     {
         /** @noinspection PhpUnhandledExceptionInspection */
-        $reg = $this->di->getFromDefinition(EventListenerRegistration::class);
+        $reg = $this->di->get(EventListenerRegistrationInterface::class);
 
         $events = $reg->getListenersForEvent($event->provider(), $event->name());
 
@@ -42,16 +39,14 @@ class EventDispatcher implements EventDispatcherInterface
         }
     }
 
-    private function dispatchEvent(EventInterface $event, string $listener): void
+    private function dispatchEvent(EventInterface $event, string $listener) : void
     {
         $listenerConstructedClass = null;
 
         /** @noinspection PhpUnhandledExceptionInspection */
-        if ($this->di->hasDefinition($listener)) {
+        if ($this->di->has($listener)) {
             /** @noinspection PhpUnhandledExceptionInspection */
-            $listenerConstructedClass = $this->di->makeFromDefinition(
-                $listener
-            );
+            $listenerConstructedClass = $this->di->get($listener);
         }
 
         if (! $listenerConstructedClass) {

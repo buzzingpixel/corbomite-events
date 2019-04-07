@@ -1,18 +1,22 @@
 <?php
+
 declare(strict_types=1);
 
 namespace corbomite\tests\EventDispatcher;
 
-use corbomite\di\Di;
-use PHPUnit\Framework\TestCase;
 use corbomite\events\EventCollector;
 use corbomite\events\EventDispatcher;
-use corbomite\events\EventListenerRegistration;
 use corbomite\events\interfaces\EventListenerRegistrationInterface;
+use PHPUnit\Framework\TestCase;
+use Psr\Container\ContainerInterface;
+use Throwable;
 
 class EventDispatcherTest extends TestCase
 {
-    public function test(): void
+    /**
+     * @throws Throwable
+     */
+    public function test() : void
     {
         $collector = $this->createMock(EventCollector::class);
 
@@ -28,39 +32,34 @@ class EventDispatcherTest extends TestCase
                 Listener2::class,
             ]);
 
-        $di = $this->createMock(Di::class);
+        $di = $this->createMock(ContainerInterface::class);
 
-        $di->expects(self::exactly(2))
-            ->method('getFromDefinition')
-            ->willReturnCallback(function ($def) use (
-                $collector,
-                $reg
-            ) {
-                switch ($def) {
-                    case EventCollector::class:
-                        return $collector;
-                    case EventListenerRegistration::class:
-                        return $reg;
-                    default:
-                        throw new \Exception('Unknown class');
-                }
-            });
+        $di->expects(self::at(0))
+            ->method('get')
+            ->with(self::equalTo(EventCollector::class))
+            ->willReturn($collector);
 
-        $di->expects(self::exactly(2))
-            ->method('hasDefinition')
-            ->with(self::logicalOr(
-                self::equalTo(Listener1::class),
-                self::equalTo(Listener2::class)
-            ))
-            ->willReturnCallback(function ($def) {
-                return $def === Listener1::class;
-            });
+        $di->expects(self::at(1))
+            ->method('get')
+            ->with(self::equalTo(EventListenerRegistrationInterface::class))
+            ->willReturn($reg);
 
-        $di->expects(self::once())
-            ->method('makeFromDefinition')
+        $di->expects(self::at(2))
+            ->method('has')
+            ->with(self::equalTo(Listener1::class))
+            ->willReturn(true);
+
+        $di->expects(self::at(3))
+            ->method('get')
             ->with(self::equalTo(Listener1::class))
             ->willReturn(new Listener1());
 
+        $di->expects(self::at(4))
+            ->method('has')
+            ->with(self::equalTo(Listener2::class))
+            ->willReturn(false);
+
+        /** @noinspection PhpParamsInspection */
         $eventDispatcher = new EventDispatcher($di);
 
         $event = new Event();

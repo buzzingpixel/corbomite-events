@@ -1,11 +1,6 @@
 <?php
-declare(strict_types=1);
 
-/**
- * @author TJ Draper <tj@buzzingpixel.com>
- * @copyright 2019 BuzzingPixel, LLC
- * @license Apache-2.0
- */
+declare(strict_types=1);
 
 namespace corbomite\events\interfaces;
 
@@ -13,7 +8,8 @@ interface EventDispatcherInterface
 {
     /**
      * Dispatches an event
-     * @param EventInterface $event
+     *
+     * @return mixed
      */
     public function dispatch(EventInterface $event);
 }

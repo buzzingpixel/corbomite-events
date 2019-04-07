@@ -1,21 +1,28 @@
 <?php
+
 declare(strict_types=1);
 
 namespace corbomite\tests\EventCollector;
 
-use PHPUnit\Framework\TestCase;
-use corbomite\events\EventCollector;
 use corbomite\configcollector\Collector;
+use corbomite\events\EventCollector;
 use corbomite\events\EventListenerRegistration;
 use corbomite\requestdatastore\DataStoreInterface;
+use PHPUnit\Framework\TestCase;
+use Throwable;
 
 class EventCollectorTest extends TestCase
 {
+    /** @var int */
     private $dataStoreCallCount = 0;
 
+    /** @var mixed[] */
     private $regCalls = [];
 
-    public function test(): void
+    /**
+     * @throws Throwable
+     */
+    public function test() : void
     {
         $self = $this;
 
@@ -34,13 +41,13 @@ class EventCollectorTest extends TestCase
 
         $registration->expects(self::exactly(2))
             ->method('register')
-            ->willReturnCallback(function ($provider, $event, $class) use ($self) {
+            ->willReturnCallback(static function ($provider, $event, $class) use ($self) : void {
                 $self->regCalls[] = $provider . '.' . $event . '.' . $class;
             });
 
         $dataStore->expects(self::exactly(2))
             ->method('storeItem')
-            ->willReturnCallback(function ($key, $val = null) use ($self) {
+            ->willReturnCallback(static function ($key, $val = null) use ($self) : void {
                 $self->dataStoreCallCount++;
 
                 $self::assertEquals(
@@ -55,6 +62,7 @@ class EventCollectorTest extends TestCase
                 self::assertTrue($val);
             });
 
+        /** @noinspection PhpParamsInspection */
         $eventCollector = new EventCollector($collector, $dataStore, $registration);
 
         $eventCollector->collect();
