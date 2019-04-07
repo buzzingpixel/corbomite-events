@@ -6,6 +6,7 @@ use corbomite\configcollector\Collector;
 use corbomite\events\EventCollector;
 use corbomite\events\EventDispatcher;
 use corbomite\events\EventListenerRegistration;
+use corbomite\events\interfaces\EventDispatcherInterface;
 use corbomite\events\interfaces\EventListenerRegistrationInterface;
 use corbomite\requestdatastore\DataStore;
 use Psr\Container\ContainerInterface;
@@ -26,5 +27,8 @@ return [
     },
     EventDispatcher::class => static function (ContainerInterface $di) {
         return new EventDispatcher($di);
+    },
+    EventDispatcherInterface::class => static function (ContainerInterface $di) {
+        return $di->get(EventDispatcher::class);
     },
 ];
