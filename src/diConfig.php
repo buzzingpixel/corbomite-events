@@ -1,31 +1,26 @@
 <?php
+
 declare(strict_types=1);
 
-/**
- * @author TJ Draper <tj@buzzingpixel.com>
- * @copyright 2019 BuzzingPixel, LLC
- * @license Apache-2.0
- */
-
+use corbomite\configcollector\Collector;
 use corbomite\di\Di;
 use corbomite\events\EventCollector;
 use corbomite\events\EventDispatcher;
-use corbomite\configcollector\Collector;
-use corbomite\requestdatastore\DataStore;
 use corbomite\events\EventListenerRegistration;
+use corbomite\requestdatastore\DataStore;
 
 return [
-    EventCollector::class => function () {
+    EventCollector::class => static function () {
         return new EventCollector(
             Di::get(Collector::class),
             Di::get(DataStore::class),
             Di::get(EventListenerRegistration::class)
         );
     },
-    EventListenerRegistration::class => function () {
+    EventListenerRegistration::class => static function () {
         return new EventListenerRegistration(Di::get(DataStore::class));
     },
-    EventDispatcher::class => function () {
+    EventDispatcher::class => static function () {
         return new EventDispatcher(new Di());
     },
 ];

@@ -1,22 +1,18 @@
 <?php
-declare(strict_types=1);
 
-/**
- * @author TJ Draper <tj@buzzingpixel.com>
- * @copyright 2019 BuzzingPixel, LLC
- * @license Apache-2.0
- */
+declare(strict_types=1);
 
 namespace corbomite\events;
 
-use LogicException;
 use corbomite\di\Di;
+use corbomite\events\interfaces\EventDispatcherInterface;
 use corbomite\events\interfaces\EventInterface;
 use corbomite\events\interfaces\EventListenerInterface;
-use corbomite\events\interfaces\EventDispatcherInterface;
+use LogicException;
 
 class EventDispatcher implements EventDispatcherInterface
 {
+    /** @var Di */
     private $di;
 
     public function __construct(Di $di)
@@ -26,7 +22,7 @@ class EventDispatcher implements EventDispatcherInterface
         $di->getFromDefinition(EventCollector::class)->collect();
     }
 
-    public function dispatch(EventInterface $event): void
+    public function dispatch(EventInterface $event) : void
     {
         /** @noinspection PhpUnhandledExceptionInspection */
         $reg = $this->di->getFromDefinition(EventListenerRegistration::class);
@@ -42,7 +38,7 @@ class EventDispatcher implements EventDispatcherInterface
         }
     }
 
-    private function dispatchEvent(EventInterface $event, string $listener): void
+    private function dispatchEvent(EventInterface $event, string $listener) : void
     {
         $listenerConstructedClass = null;
 

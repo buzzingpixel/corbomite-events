@@ -1,18 +1,24 @@
 <?php
+
 declare(strict_types=1);
 
 namespace corbomite\tests\EventDispatcher;
 
 use corbomite\di\Di;
-use PHPUnit\Framework\TestCase;
 use corbomite\events\EventCollector;
 use corbomite\events\EventDispatcher;
 use corbomite\events\EventListenerRegistration;
 use corbomite\events\interfaces\EventListenerRegistrationInterface;
+use Exception;
+use PHPUnit\Framework\TestCase;
+use Throwable;
 
 class EventDispatcherStopPropagationTest extends TestCase
 {
-    public function test(): void
+    /**
+     * @throws Throwable
+     */
+    public function test() : void
     {
         $collector = $this->createMock(EventCollector::class);
 
@@ -33,7 +39,7 @@ class EventDispatcherStopPropagationTest extends TestCase
 
         $di->expects(self::exactly(2))
             ->method('getFromDefinition')
-            ->willReturnCallback(function ($def) use (
+            ->willReturnCallback(static function ($def) use (
                 $collector,
                 $reg
             ) {
@@ -43,7 +49,7 @@ class EventDispatcherStopPropagationTest extends TestCase
                     case EventListenerRegistration::class:
                         return $reg;
                     default:
-                        throw new \Exception('Unknown class');
+                        throw new Exception('Unknown class');
                 }
             });
 
@@ -53,7 +59,7 @@ class EventDispatcherStopPropagationTest extends TestCase
                 self::equalTo(Listener1::class),
                 self::equalTo(ListenerStopsPropagation::class)
             ))
-            ->willReturnCallback(function ($def) {
+            ->willReturnCallback(static function ($def) {
                 return $def === Listener1::class;
             });
 
@@ -62,6 +68,7 @@ class EventDispatcherStopPropagationTest extends TestCase
             ->with(self::equalTo(Listener1::class))
             ->willReturn(new Listener1());
 
+        /** @noinspection PhpParamsInspection */
         $eventDispatcher = new EventDispatcher($di);
 
         $event = new Event();

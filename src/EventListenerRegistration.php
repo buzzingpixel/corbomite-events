@@ -1,19 +1,15 @@
 <?php
-declare(strict_types=1);
 
-/**
- * @author TJ Draper <tj@buzzingpixel.com>
- * @copyright 2019 BuzzingPixel, LLC
- * @license Apache-2.0
- */
+declare(strict_types=1);
 
 namespace corbomite\events;
 
-use corbomite\requestdatastore\DataStoreInterface;
 use corbomite\events\interfaces\EventListenerRegistrationInterface;
+use corbomite\requestdatastore\DataStoreInterface;
 
 class EventListenerRegistration implements EventListenerRegistrationInterface
 {
+    /** @var DataStoreInterface */
     private $dataStore;
 
     public function __construct(DataStoreInterface $dataStore)
@@ -21,7 +17,7 @@ class EventListenerRegistration implements EventListenerRegistrationInterface
         $this->dataStore = $dataStore;
     }
 
-    public function register(string $provider, string $eventName, string $class): void
+    public function register(string $provider, string $eventName, string $class) : void
     {
         $items = $this->getListenersForEvent($provider, $eventName);
 
@@ -36,7 +32,7 @@ class EventListenerRegistration implements EventListenerRegistrationInterface
     public function getListenersForEvent(
         string $provider,
         string $eventName
-    ): iterable {
+    ) : iterable {
         $items = $this->dataStore->storeItem(
             self::class . '.' . $provider . '.' . $eventName
         );
